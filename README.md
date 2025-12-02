@@ -11,3 +11,4 @@ short_description: Repository for Lab2 assignment of the Mlops course
 ---
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+

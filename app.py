@@ -1,7 +1,7 @@
 import gradio as gr
 import requests
 
-API_URL = "https://TU-API-EN-RENDER.onrender.com/predict"
+API_URL = "https://firstcontainer-latest.onrender.com/predict"
 
 def obtain_pred():
     try:
