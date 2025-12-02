@@ -1,25 +1,30 @@
 import gradio as gr
 import requests
 
+# URL of your FastAPI /predict endpoint
 API_URL = "https://firstcontainer-latest.onrender.com/predict"
 
-def obtain_pred():
+def obtain_pred(image):
     try:
-        response = requests.get(API_URL, timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            return f"Predicted label: {data.get('label', 'No label field found')}"
+        # Convert the Gradio image to a file-like object
+        files = {"file": ("image.png", image, "image/png")}
+        response = requests.post(API_URL, files=files, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        if "prediction" in data:
+            return f"Predicted label: {data['prediction']}"
         else:
-            return f"Error: API returned status {response.status_code}"
-    except Exception as e:
+            return f"Error: {data.get('error', 'No prediction returned')}"
+    except requests.exceptions.RequestException as e:
         return f"Error contacting API: {e}"
 
+# Gradio interface
 demo = gr.Interface(
     fn=obtain_pred,
-    inputs=[],
-    outputs="text",
-    title="Random Prediction Demo",
-    description="This app calls the API hosted on Render to obtain a random prediction."
+    inputs=gr.Image(type="pil", label="Upload an image"),
+    outputs=gr.Textbox(label="Prediction"),
+    title="Image Classification Demo",
+    description="Upload an image to get a random predicted class using the /predict endpoint."
 )
 
 if __name__ == "__main__":
